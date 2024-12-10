@@ -3,3 +3,58 @@
   flex-wrap: wrap;
   max-width: calc(100% - 6rem);
 }
+
+.container{
+  max-width: 90% !important;
+}
+
+.page-change-button {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 0 0.2rem 0 0.2rem;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #007BFF;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.page-change-button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+.page-change-button:active {
+  background-color: #003d80;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.page-change-button:disabled {
+  background-color: #d6d6d6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.page-change-button.small {
+  padding: 5px 10px;
+  font-size: 14px;
+}
+
+.page-change-button.large {
+  padding: 15px 30px;
+  font-size: 18px;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .page-change-button {
+      width: 100%;
+      font-size: 14px;
+  }
+}

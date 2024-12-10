@@ -25,7 +25,6 @@ export function Navi() {
             <li className="nav-item">
                 <NavLink to={'/vasarolj'} className="nav-link">Termékek</NavLink>
             </li>
-            
           </ul>
         </div>
       </div>
