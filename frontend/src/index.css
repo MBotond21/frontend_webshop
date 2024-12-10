@@ -1,0 +1,5 @@
+.box {
+  display: inline-flex !important;
+  flex-wrap: wrap;
+  max-width: calc(100% - 6rem);
+}
