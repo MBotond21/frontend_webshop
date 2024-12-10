@@ -16,7 +16,7 @@ export function Kartya(props: Props) {
                 <h4 className="card-title">{product.name}</h4>
                 <h6 className="card-subtitle mb-2 text-muted">Ár: {Intl.NumberFormat('fr-FR').format(product.price)} Ft</h6>
                 <p className="card-text">
-                    <strong>Elérhető: </strong> {product.quantity} <br />
+                    <strong>Elérhető: </strong> {product.quantity} db <br />
                     {product.description}
                     {
                         props.btn? <><br />{props.btn}</>: <span></span>

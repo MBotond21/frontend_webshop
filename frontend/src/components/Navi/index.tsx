@@ -1,4 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import './index.css'
 import { NavLink } from 'react-router';
 
 export function Navi() {
@@ -23,7 +25,16 @@ export function Navi() {
               <NavLink to={'/'} className="nav-link active" aria-current="page">Home</NavLink>
             </li>
             <li className="nav-item">
-                <NavLink to={'/vasarolj'} className="nav-link">Termékek</NavLink>
+              <NavLink to={'/vasarolj'} className="nav-link">Termékek</NavLink>
+            </li>
+            <li className="nav-item dropdown">
+              <a className="nav-link dropdown-toggle" href='#' id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" onClick={(e) => e.preventDefault()}>
+                Fiók
+              </a>
+              <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><NavLink to={'/register'} className="dropdown-item">Regisztráció</NavLink></li>
+                <li><NavLink to={'/login'} className="dropdown-item">Bejelentkezés</NavLink></li>
+              </ul>
             </li>
           </ul>
         </div>

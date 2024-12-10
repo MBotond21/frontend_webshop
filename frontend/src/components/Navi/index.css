@@ -1,0 +1,4 @@
+.dropdown-menu{
+    min-width: 0 !important;
+    max-width: fit-content !important;
+}
