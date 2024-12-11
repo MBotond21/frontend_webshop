@@ -36,6 +36,9 @@ export function Navi() {
                 <li><NavLink to={'/login'} className="dropdown-item">Bejelentkezés</NavLink></li>
               </ul>
             </li>
+            <li className="nav-item">
+              <NavLink to={'/cart'} className="nav-link"><i className="bi bi-cart"></i></NavLink>
+            </li>
           </ul>
         </div>
       </div>

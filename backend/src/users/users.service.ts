@@ -14,6 +14,13 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
+    const existingUser = await this.db.user.findUnique({
+      where: { email: createUserDto.email }
+    });
+
+    if (existingUser) {
+      return undefined;
+    }
     const hashedPw = await argon2.hash(createUserDto.password);
     const newUser = await this.db.user.create({
       data: {

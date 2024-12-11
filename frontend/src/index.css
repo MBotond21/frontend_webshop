@@ -1,7 +1,15 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css");
+
+.bi{
+  margin-left: 2rem;
+  line-height: 1;
+  font-size: 2rem;
+}
+
 .box {
   display: inline-flex !important;
   flex-wrap: wrap;
-  max-width: calc(100% - 6rem);
+  max-width: 100%;
 }
 
 .container{
