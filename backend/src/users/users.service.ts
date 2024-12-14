@@ -5,6 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'prisma/prisma.service';
 import * as argon2 from 'argon2';
 import { randomBytes } from 'crypto';
+import { disconnect } from 'process';
 
 @Injectable()
 export class UsersService {
@@ -57,6 +58,15 @@ export class UsersService {
       throw new Error('Invalid password');
     }
   }
+
+  // async logout(token: string){
+  //     return await this.db.token.update({
+  //       where: { token },
+  //       data: {
+  //         user: {disconnect: [{}]}
+  //       }
+  //     })
+  // }
 
   findAll() {
     return `This action returns all users`;
