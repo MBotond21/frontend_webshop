@@ -1,4 +1,3 @@
-import { Navi } from "../components/Navi";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -36,7 +35,6 @@ export default function Register() {
     
 
     return <>
-        <Navi />
         <div className="container mt-5">
             <div className="row justify-content-center">
                 <div className="col-md-6">

@@ -1,12 +1,15 @@
-import { Navi } from "../components/Navi";
 
 export default function Home() {
     return <>
-        <Navi />
-        <div className="container">
-            <h1>Home</h1>
-            <h3>Üdvözöllek az oldalon</h3>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo accusantium molestias eligendi praesentium quaerat non enim obcaecati voluptatibus, quia eos temporibus dignissimos quam tenetur. Similique nulla ratione est quasi natus!</p>
-        </div>
+        <main>
+            <div className="container">
+                <div className="row">
+                    <div className="col-sm-4">
+                        <h1>Üdvözöllek az oldalon</h1>
+                        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Cum necessitatibus porro sunt ratione distinctio? Temporibus est sint sunt illo laborum eum repellat voluptatem consequatur non, error, ea, impedit laboriosam totam.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
     </>
 }

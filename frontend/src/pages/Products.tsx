@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { Navi } from "../components/Navi";
 import { Kartya } from "../components/Kartya";
 import { Product } from "../product";
 
@@ -69,7 +68,6 @@ export default function Products() {
 
     return (
         <>
-            <Navi />
             <div className="container">
                 <h1>Termékek</h1>
                 <form>
