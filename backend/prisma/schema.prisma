@@ -28,4 +28,11 @@ model User{
   userName String
   password String
   products Product[]
+  tokens Token[]
+}
+
+model Token {
+  token String @id
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
 }

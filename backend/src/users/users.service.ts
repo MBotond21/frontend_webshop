@@ -4,6 +4,7 @@ import { LoginDto } from './dto/login-dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'prisma/prisma.service';
 import * as argon2 from 'argon2';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class UsersService {
@@ -39,9 +40,19 @@ export class UsersService {
       }
     });
     if (await argon2.verify(await user.password, loginData.password)) {
-      // Sikeres!
-      delete user.password;
-      return user;
+      const token = randomBytes(32).toString('hex');
+      await this.db.token.create({
+        data: {
+          token,
+          user: {
+            connect: { id: user.id }
+          }
+        }
+      })
+      return {
+        token: token,
+        userId: user.id
+      }
     } else {
       throw new Error('Invalid password');
     }
@@ -63,5 +74,17 @@ export class UsersService {
     return await this.db.user.delete({
       where: { id }
     });
+  }
+
+  async findUserByToken(token: string){
+    const tokenData = await this.db.token.findUnique({
+      where: { token },
+      include: { user: true }
+    })
+    if(!tokenData) return null;
+    const user = tokenData.user;
+    delete user.password;
+
+    return user;
   }
 }
