@@ -6,7 +6,7 @@ import { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 
 export function Navi() {
-  const { user, validate } = useContext(AuthContext);
+  const { user, validate, logout } = useContext(AuthContext);
   const [loggedin, setLoggedin] = useState<boolean>(false);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export function Navi() {
                     loggedin ? (
                       <>
                         <li><NavLink to={'/account'} className="dropdown-item">Részletek</NavLink></li>
-                        <li><NavLink to={'/logout'} className="dropdown-item">Kilépés</NavLink></li>
+                        <li><NavLink to={'/'} className="dropdown-item" onClick={logout}>Kilépés</NavLink></li>
                       </>
                     ) : (
                       <>
