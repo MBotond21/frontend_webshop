@@ -15,9 +15,9 @@ const root = document.getElementById("root") as HTMLElement;
 
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
-    <AuthProvider>
-      <BrowserRouter>
-        <Navi/>
+    <BrowserRouter>
+      <AuthProvider>
+        <Navi />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/vasarolj" element={<Products />} />
@@ -26,7 +26,7 @@ ReactDOM.createRoot(root).render(
           <Route path="/cart" element={<Cart />} />
           <Route path="/account" element={<Account />} />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );

@@ -1,27 +1,25 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import './index.css'
+import './index.css';
 import { NavLink } from 'react-router';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useCallback } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 
 export function Navi() {
   const { user, validate, logout } = useContext(AuthContext);
-  const [loggedin, setLoggedin] = useState<boolean>(false);
+  const loggedin = !!user?.userName;
 
-  useEffect(() => {
-    const validateUser = async () => {
-      await validate();
-      setLoggedin(!!user?.userName);
-    };
-    validateUser();
-  }, [user?.userName, validate]);
+  const handleLogout = useCallback(() => {
+    logout();
+  }, [logout]);
 
-  const handelAcc = (e: any) => {
-    e.preventDefault();
-    console.log(user?.token);
-    setLoggedin(!!user?.userName);
-  }
+  const handleAccountClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      validate();
+    },
+    [validate]
+  );
 
   return (
     <header>
@@ -48,23 +46,29 @@ export function Navi() {
                 <NavLink to={'/vasarolj'} className="nav-link">Termékek</NavLink>
               </li>
               <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href='#' id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" onClick={(e) => handelAcc(e)}>
+                <a
+                  className="nav-link dropdown-toggle"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  onClick={handleAccountClick}
+                >
                   Fiók
                 </a>
                 <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                  {
-                    loggedin ? (
-                      <>
-                        <li><NavLink to={'/account'} className="dropdown-item">Részletek</NavLink></li>
-                        <li><NavLink to={'/'} className="dropdown-item" onClick={logout}>Kilépés</NavLink></li>
-                      </>
-                    ) : (
-                      <>
-                        <li><NavLink to={'/register'} className="dropdown-item">Regisztráció</NavLink></li>
-                        <li><NavLink to={'/login'} className="dropdown-item">Bejelentkezés</NavLink></li>
-                      </>
-                    )
-                  }
+                  {loggedin ? (
+                    <>
+                      <li><NavLink to={'/account'} className="dropdown-item">Részletek</NavLink></li>
+                      <li><NavLink to={'/'} className="dropdown-item" onClick={handleLogout}>Kilépés</NavLink></li>
+                    </>
+                  ) : (
+                    <>
+                      <li><NavLink to={'/register'} className="dropdown-item">Regisztráció</NavLink></li>
+                      <li><NavLink to={'/login'} className="dropdown-item">Bejelentkezés</NavLink></li>
+                    </>
+                  )}
                 </ul>
               </li>
               <li className="nav-item">
@@ -76,4 +80,4 @@ export function Navi() {
       </nav>
     </header>
   );
-};
+}

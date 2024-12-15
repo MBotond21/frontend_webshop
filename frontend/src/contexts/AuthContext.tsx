@@ -1,23 +1,21 @@
-import React, { createContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { User, AuthContextType } from '../types/auth';
+import { useNavigate } from 'react-router';
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   login: () => {},
   validate: () => {},
-  logout: () => {}
+  logout: () => {},
 });
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadToken = async () => {
-      const token = localStorage.getItem("authToken"); // This is synchronous
+      const token = localStorage.getItem("authToken");
       if (token) {
         setUser({ token });
       }
@@ -26,65 +24,60 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const logUser = {
-      email: email,
-      password: password
-  };
     try {
-      const response = await fetch(`http://localhost:3000/users/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(logUser),
-          //credentials: 'include',
+      const response = await fetch("http://localhost:3000/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
-      if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Login failed');
-      }
+  
+      if (!response.ok) throw new Error("Login failed");
+  
       const data = await response.json();
-      delete data.userId;
-      setUser(data);
+      setUser({ id: data.userId, token: data.token }); 
       localStorage.setItem("authToken", data.token);
-      console.log('User logged in successfully:', data);
-  } catch (error: any) {
+  
+      await validate();
+  
+      navigate("/account");
+    } catch (error: any) {
+      console.error("Login error:", error);
       alert(error.message);
-  }
+    }
   };
+  
 
   const validate = async () => {
-
-    await fetch("http://localhost:3000/users", {
-      headers: {Authorization: `Bearer ${user?.token}`}
-    })
-            .then((response) => {
-                if (response.status === 404) {
-                    console.log('A kért erőforrás nem található (404)!');
-                }
-                if (!response.ok) {
-                  console.log(`Server responded with status ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log(data);
-                delete data.id;
-                setUser({
-                  email: data.email,
-                  userName: data.userName,
-                  token: user!.token
-                });
-                console.log(user?.userName);
-            })
-            .catch((error) => {
-                console.error(error.message);
-                console.log(error.message);
-            });
+    try {
+      const response = await fetch("http://localhost:3000/users", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${user?.token || localStorage.getItem("authToken")}`,
+        },
+      });
+  
+      if (!response.ok) throw new Error("Validation failed");
+  
+      const data = await response.json();
+      setUser({
+        id: data.id,
+        userName: data.userName,
+        email: data.email,
+        token: user?.token || localStorage.getItem("authToken")!,
+      });
+    } catch (error: any) {
+      console.error("Validation error:", error);
+      setUser(null);
+      localStorage.removeItem("authToken");
+    }
   };
+  
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setUser(null);
     localStorage.removeItem("authToken");
-  };
+    navigate("./login");
+  }, [navigate]);
 
   return (
     <AuthContext.Provider value={{ user, login, validate, logout }}>
