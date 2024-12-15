@@ -12,6 +12,7 @@ export default function Products() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
+    const [sortConfig, setSortConfig] = useState<{ key: keyof Product; direction: string } | null>({key: 'dft' as keyof Product, direction: 'asc'});
     const elementsPerPage = 10;
 
     useEffect(() => {
@@ -38,6 +39,17 @@ export default function Products() {
             });
     }, []);
 
+    const handelDirectionChanged = useCallback((direction: string) => {
+        const key = sortConfig?.key || ('dft' as keyof Product);
+        setSortConfig({ key, direction });
+    }, [sortConfig]);
+    
+    const handelOrderChanged = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+        const key = e.target.value as keyof Product;
+        const direction = sortConfig?.direction || 'asc';
+        setSortConfig({ key, direction });
+    }, [sortConfig]); 
+
     const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrentPage(1);
         const term = event.target.value.toLowerCase();
@@ -52,9 +64,22 @@ export default function Products() {
     }, [products]);
 
     useEffect(() => {
-        setTotalPages(Math.ceil(mid.length / elementsPerPage));
-        setFiltered(mid.slice((currentPage - 1) * elementsPerPage, currentPage * elementsPerPage));
-    }, [currentPage, mid]);
+        const startIndex = (currentPage - 1) * elementsPerPage;
+        const endIndex = currentPage * elementsPerPage;
+        let updatedProducts = mid.slice(startIndex, endIndex);
+    
+        if (sortConfig && sortConfig.key !== ('dft' as keyof Product)) {
+            updatedProducts = [...updatedProducts].sort((a, b) => {
+                const { key, direction } = sortConfig;
+                if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
+                if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+    
+        setFiltered(updatedProducts);
+    }, [currentPage, mid, sortConfig, elementsPerPage]);
+    
 
     const handlePageChange = (page: number) => {
         if (page >= 1 && page <= totalPages) {
@@ -82,6 +107,18 @@ export default function Products() {
                         />
                     </label>
                 </form>
+
+                <div className='box right'>
+                    <button className='btn' onClick={() => handelDirectionChanged('asc')}>&#8593;</button>
+                    <button className='btn' onClick={() => handelDirectionChanged('desc')}>&#8595;</button>
+                    <select name="sort" onChange={(e) => handelOrderChanged(e)}>
+                        <option value="dft">Alapértelmezett</option>
+                        <option value="price">Ár</option>
+                        <option value="name">Név</option>
+                        <option value="quantity">Darabszám</option>
+                    </select>
+                </div>
+
                 <div className="box">
                     {filtered.map((product) => (
                         <Kartya product={product} key={product.id} />
