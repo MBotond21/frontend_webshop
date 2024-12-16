@@ -71,9 +71,15 @@ export function Navi() {
                   )}
                 </ul>
               </li>
-              <li className="nav-item">
-                <NavLink to={'/cart'} className="nav-link"><i className="bi bi-cart"></i></NavLink>
-              </li>
+              {
+                loggedin ? (
+                  <li className="nav-item">
+                    <NavLink to={'/cart'} className="nav-link"><i className="bi bi-cart"></i></NavLink>
+                  </li>
+                ): (
+                  <></>
+                )
+              }
             </ul>
           </div>
         </div>

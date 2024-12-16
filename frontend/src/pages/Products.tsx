@@ -61,12 +61,13 @@ export default function Products() {
                 product.description.toLowerCase().includes(term)
         );
         setMid(filteredP);
+        setTotalPages(Math.ceil(filteredP.length / elementsPerPage));
     }, [products]);
 
     useEffect(() => {
         const startIndex = (currentPage - 1) * elementsPerPage;
         const endIndex = currentPage * elementsPerPage;
-        let updatedProducts = mid.slice(startIndex, endIndex);
+        let updatedProducts = mid;
     
         if (sortConfig && sortConfig.key !== ('dft' as keyof Product)) {
             updatedProducts = [...updatedProducts].sort((a, b) => {
@@ -76,6 +77,8 @@ export default function Products() {
                 return 0;
             });
         }
+
+        updatedProducts = updatedProducts.slice(startIndex, endIndex);
     
         setFiltered(updatedProducts);
     }, [currentPage, mid, sortConfig, elementsPerPage]);
