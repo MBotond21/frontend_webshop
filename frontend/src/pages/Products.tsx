@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Kartya } from "../components/Kartya";
 import { Product } from "../product";
+import { CartContext } from "../contexts/CartContext";
 
 export default function Products() {
+    const [cart, addNewProduct] = useContext(CartContext)
     const [products, setProducts] = useState<Product[]>([]);
     const [mid, setMid] = useState<Product[]>([]);
     const [filtered, setFiltered] = useState<Product[]>([]);
@@ -89,6 +91,8 @@ export default function Products() {
             setCurrentPage(page);
         }
     };
+
+
 
     if (errorServer) return <p>{errorServer}</p>;
     if (loading) return <p>Loading...</p>;
