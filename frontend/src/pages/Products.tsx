@@ -2,9 +2,15 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { Kartya } from "../components/Kartya";
 import { Product } from "../product";
 import { CartContext } from "../contexts/CartContext";
+import { AuthContext } from "../contexts/AuthContext";
+
 
 export default function Products() {
-    const [cart, addNewProduct] = useContext(CartContext)
+    const { addNewProduct } = useContext(CartContext)
+
+    const { user } = useContext(AuthContext);
+    const loggedin = !!user?.userName;
+
     const [products, setProducts] = useState<Product[]>([]);
     const [mid, setMid] = useState<Product[]>([]);
     const [filtered, setFiltered] = useState<Product[]>([]);
@@ -92,8 +98,6 @@ export default function Products() {
         }
     };
 
-
-
     if (errorServer) return <p>{errorServer}</p>;
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Hiba történt: {error}.</p>;
@@ -116,8 +120,8 @@ export default function Products() {
                 </form>
 
                 <div className='box right'>
-                    <button className='btn' onClick={() => handelDirectionChanged('asc')}>&#8593;</button>
-                    <button className='btn' onClick={() => handelDirectionChanged('desc')}>&#8595;</button>
+                    <button className='btn-c no-bg' onClick={() => handelDirectionChanged('asc')}>&#8593;</button>
+                    <button className='btn-c no-bg' onClick={() => handelDirectionChanged('desc')}>&#8595;</button>
                     <select name="sort" onChange={(e) => handelOrderChanged(e)}>
                         <option value="dft">Alapértelmezett</option>
                         <option value="price">Ár</option>
@@ -128,7 +132,11 @@ export default function Products() {
 
                 <div className="box">
                     {filtered.map((product) => (
-                        <Kartya product={product} key={product.id} />
+                        loggedin? (
+                            <Kartya product={product} key={product.id} btn={<button className='btn-c' onClick={() => {addNewProduct(products[product.id-1])}}>Kosárba</button>}/>
+                        ):(
+                            <Kartya product={product} key={product.id}/>
+                        )
                     ))}
                 </div>
                 <div>

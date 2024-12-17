@@ -76,7 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = useCallback(() => {
     setUser(null);
     localStorage.removeItem("authToken");
-    navigate("./login");
+    navigate("/login");
   }, [navigate]);
 
   return (
