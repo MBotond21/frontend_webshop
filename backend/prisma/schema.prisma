@@ -25,7 +25,7 @@ model Product{
 model User{
   id Int @id @default(autoincrement())
   email String @unique
-  userName String
+  userName String @unique
   password String
   products Product[]
   tokens Token[]

@@ -13,9 +13,12 @@ export class UsersController {
 
   @Post('register')
   async create(@Body() createUserDto: CreateUserDto) {
-    const user = await this.usersService.create(createUserDto);
-    if (!user) throw new ConflictException("Email already in use");
-    return user;
+    try{
+      const user = await this.usersService.create(createUserDto);
+      return user;
+    }catch(e){
+      throw new ConflictException(e.message)
+    }
   }
 
   @Post('login')

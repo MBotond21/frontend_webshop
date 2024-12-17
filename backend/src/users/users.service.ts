@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login-dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -20,9 +20,18 @@ export class UsersService {
       where: { email: createUserDto.email }
     });
 
+    const existingUsename = await this.db.user.findUnique({
+      where: { userName: createUserDto.userName }
+    })
+
     if (existingUser) {
-      return undefined;
+      throw new ConflictException("Email already in use");
     }
+
+    if(existingUsename){
+      throw new ConflictException('Username already in use');
+    }
+
     const hashedPw = await argon2.hash(createUserDto.password);
     const newUser = await this.db.user.create({
       data: {
