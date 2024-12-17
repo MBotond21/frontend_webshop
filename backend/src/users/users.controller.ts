@@ -33,7 +33,6 @@ export class UsersController {
   @Get()
   @UseGuards(AuthGuard('bearer'))
   findAll(@Request() request) {
-    console.log(request.user);
     return request.user;
   }
 
