@@ -16,13 +16,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Initialize validation check (it checks sessionStorage for the validation flag)
-    const isValidating = sessionStorage.getItem("isValidating");
-    if (isValidating === "true") {
-      console.log("Validation already in progress.");
-      return; // Skip validation if already in progress
-    }
-  }, []);
+    const loadUserData = async () => {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        try {
+          const response = await fetch("http://localhost:3000/users", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) throw new Error("Token validation failed");
+
+          const data = await response.json();
+          setUser({
+            id: data.id,
+            userName: data.userName,
+            email: data.email,
+            token,
+          });
+        } catch (error) {
+          console.error("Validation error:", error);
+          localStorage.removeItem("authToken");
+          setUser(null);
+        }
+      }
+    };
+
+    loadUserData();
+  }, [isLoggedOut]);
 
   const login = async (email: string, password: string) => {
     try {
@@ -48,17 +71,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const validate = async () => {
-    if (isLoggedOut || sessionStorage.getItem("isValidating") == "true") {
-      console.log("1. fail");
+    const isValidating = sessionStorage.getItem("isValidating");
+    if (isValidating === "true") {
+      console.log("Validation already in progress.");
       return false;
     }
 
-    sessionStorage.setItem("isValidating", "false");
+    sessionStorage.setItem("isValidating", "true");
 
     try {
       const token = user?.token || localStorage.getItem("authToken");
       if (!token) {
-        console.log("2. fail");
+        console.log("No token found.");
         return false;
       }
 
@@ -67,7 +91,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (!response.ok) throw new Error("Validation failed");
+      if (!response.ok) throw new Error("Token validation failed");
 
       const data = await response.json();
       setUser({
@@ -80,12 +104,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return true;
     } catch (error) {
       console.error("Validation error:", error);
-      localStorage.removeItem("authToken");
       setUser(null);
-      console.log("3. fail");
+      //localStorage.removeItem("authToken");
       return false;
     } finally {
-      sessionStorage.removeItem("isValidating");
+      sessionStorage.setItem("isValidating", "false");
     }
   };
 
@@ -118,7 +141,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         const responseData = await response.json();
-
         setUser(responseData);
 
       } catch (error: any) {

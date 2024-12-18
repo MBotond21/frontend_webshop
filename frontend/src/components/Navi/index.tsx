@@ -9,13 +9,18 @@ export function Navi() {
   const { user, validate, logout } = useContext(AuthContext);
   const loggedin = !!user?.userName;
 
-  // useEffect(() => {
-  //   const loadUserData = async () => {
-  //     await validate();
-  //   };
+  useEffect(() => {
+    const loadUserData = async () => {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        await validate();
+      } else {
+        console.log("No token found, skipping validation.");
+      }
+    };
 
-  //   loadUserData();
-  // }, [validate]);
+    loadUserData();
+  }, [validate]);
 
   const handleLogout = useCallback(() => {
     logout();
