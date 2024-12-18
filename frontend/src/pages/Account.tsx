@@ -3,7 +3,7 @@ import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router";
 
 export default function Account() {
-  const { user, validate } = useContext(AuthContext);
+  const { user, validate, update } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [modify, setModify] = useState(false);
@@ -43,13 +43,28 @@ export default function Account() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    if (userName || password) {
-      setModify(!modify);
-      console.log(userName + " | " + password);
-    } else {
-      alert("Semmilyen változatást nem adtál meg.")
+    if (!userName && !password) {
+      alert("No changes were set.");
+      return;
+    }
+  
+    const updateUserDto: any = {};
+    if (userName) updateUserDto.userName = userName;
+    if (password) updateUserDto.password = password;
+  
+    setModify(!modify);
+    
+    try {
+      if (user) {
+        await update(user.id!, updateUserDto.userName, updateUserDto.password);
+      } else {
+        console.error("User is not logged in.");
+      }
+    } catch (error) {
+      console.error("Failed to update user:", error);
     }
   };
+  
 
   if (loading) {
     return (

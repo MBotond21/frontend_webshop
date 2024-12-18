@@ -95,7 +95,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (!response.ok) throw new Error("Token validation failed");
 
       const data = await response.json();
-      setUser({
+      await setUser({
         id: data.id,
         userName: data.userName,
         email: data.email,
@@ -105,7 +105,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return true;
     } catch (error) {
       console.error("Validation error:", error);
-      setUser(null);
+      await setUser(null);
       //localStorage.removeItem("authToken");
       return false;
     } finally {
@@ -124,8 +124,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const update = async (id: number, userName?: string, password?: string) => {
     if (confirm("Biztos mented a változtatásokat?")) {
       const data = {
-        userName: userName,
-        password: password,
+        userName,
+        password,
       };
 
       try {
@@ -142,7 +142,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         const responseData = await response.json();
-        setUser(responseData);
+        await setUser(responseData);
 
       } catch (error: any) {
         console.error('Failed to patch data:', error);
