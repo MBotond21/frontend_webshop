@@ -9,7 +9,7 @@ export interface User {
   export interface AuthContextType {
     user: User | null;
     login: (email: string, password: string) => void;
-    validate: () => void;
+    validate: () => Promise<boolean>;
     logout: () => void;
     update: (id: number, userName?: string, password?: string) => void;
   }

@@ -18,8 +18,9 @@ export default function Account() {
       }
 
       try {
-        await validate();
-        if (!user!.userName) {
+        const isValidUser = await validate();
+        if (!isValidUser) {
+          console.log(isValidUser);
           navigate("/login");
         }
       } catch (error) {
@@ -33,10 +34,21 @@ export default function Account() {
     validateUser();
   }, [user, validate, navigate]);
 
+  useEffect(() => {
+
+    setUserName('');
+    setPsw('');
+
+  }, [modify]);
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    setModify(!modify);
-    console.log(userName + " | " + password);
+    if (userName || password) {
+      setModify(!modify);
+      console.log(userName + " | " + password);
+    } else {
+      alert("Semmilyen változatást nem adtál meg.")
+    }
   };
 
   if (loading) {

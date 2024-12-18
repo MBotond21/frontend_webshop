@@ -2,21 +2,29 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './index.css';
 import { NavLink } from 'react-router';
-import { useContext, useCallback } from 'react';
+import { useContext, useCallback, useEffect } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 
 export function Navi() {
   const { user, validate, logout } = useContext(AuthContext);
   const loggedin = !!user?.userName;
 
+  // useEffect(() => {
+  //   const loadUserData = async () => {
+  //     await validate();
+  //   };
+
+  //   loadUserData();
+  // }, [validate]);
+
   const handleLogout = useCallback(() => {
     logout();
   }, [logout]);
 
   const handleAccountClick = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>) => {
+    async (e: React.MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault();
-      validate();
+      await validate();
     },
     [validate]
   );
