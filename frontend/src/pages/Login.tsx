@@ -1,11 +1,24 @@
-import { useContext, useState } from "react"
+import { useContext, useState, useEffect } from "react"
 import { AuthContext } from "../contexts/AuthContext"
+import { useNavigate } from "react-router";
 
 export default function Login() {
-    const { login } = useContext(AuthContext);
+    const {user, login, validate } = useContext(AuthContext);
 
     const [email, setEmail] = useState<string>('');
     const [password, setPsw] = useState<string>('');
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const checkUser = async () => {
+          const isValid = await validate();
+          if (isValid || user) {
+            navigate("/account");
+          }
+        };
+    
+        checkUser();
+      }, [validate, user, navigate]);
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();

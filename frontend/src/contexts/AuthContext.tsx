@@ -63,6 +63,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       await validate();
 
+      window.location.reload();
       navigate("/account");
     } catch (error: any) {
       console.error("Login error:", error);
