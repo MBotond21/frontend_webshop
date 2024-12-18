@@ -11,4 +11,5 @@ export interface User {
     login: (email: string, password: string) => void;
     validate: () => void;
     logout: () => void;
+    update: (id: number, userName?: string, password?: string) => void;
   }

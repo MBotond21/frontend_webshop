@@ -7,6 +7,7 @@ export const AuthContext = createContext<AuthContextType>({
   login: () => {},
   validate: () => {},
   logout: () => {},
+  update: () => {},
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -109,8 +110,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     navigate("/login");
   }, [navigate]);
 
+  const update = async (id: number, userName?: string, password?: string) => {
+
+  }
+
   return (
-    <AuthContext.Provider value={{ user, login, validate, logout }}>
+    <AuthContext.Provider value={{ user, login, validate, logout, update }}>
       {children}
     </AuthContext.Provider>
   );

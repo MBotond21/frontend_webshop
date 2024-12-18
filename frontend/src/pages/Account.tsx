@@ -61,9 +61,9 @@ export default function Account() {
               <div className="col-sm-4">
                 <form onSubmit={handleSubmit}>
                   <div className="mb-3">
-                    <label htmlFor="email" className="form-label">Email cím</label>
+                    <label htmlFor="userName" className="form-label">Felhasználónév</label>
                     <input
-                      type="email"
+                      type="text"
                       className="form-control"
                       onChange={(e) => { setUserName(e.target.value); }}
                       id="userName"

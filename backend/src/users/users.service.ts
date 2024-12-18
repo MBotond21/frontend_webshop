@@ -1,11 +1,10 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, BadRequestException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login-dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'prisma/prisma.service';
 import * as argon2 from 'argon2';
 import { randomBytes } from 'crypto';
-import { disconnect } from 'process';
 
 @Injectable()
 export class UsersService {
@@ -85,9 +84,38 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const newData: Record<string, any> = {};
+  
+    if (updateUserDto.userName) {
+      const existingUsername = await this.db.user.findUnique({
+        where: { userName: updateUserDto.userName },
+      });
+      if (existingUsername) {
+        throw new ConflictException('Username already in use');
+      }
+      newData.userName = updateUserDto.userName;
+    }
+  
+    if (updateUserDto.password) {
+      const hashedPw = await argon2.hash(updateUserDto.password);
+      newData.password = hashedPw;
+    }
+  
+    if (Object.keys(newData).length === 0) {
+      throw new BadRequestException('No valid fields to update');
+    }
+  
+    const updatedUser = await this.db.user.update({
+      where: { id },
+      data: newData,
+    });
+  
+    delete updatedUser.password;
+  
+    return updatedUser;
   }
+  
 
   async remove(id: number) {
     return await this.db.user.delete({

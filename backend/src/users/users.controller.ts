@@ -42,8 +42,12 @@ export class UsersController {
   }
 
   @Patch(':id(\\d+)')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    try {
+      return this.usersService.update(+id, updateUserDto);
+    } catch(e) {
+      throw new ConflictException(e.message);
+    }
   }
 
   @Delete(':id(\\d+)')
